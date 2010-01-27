@@ -13,7 +13,7 @@ require 'bio/sequence'
 # Internal use only. Normal users should not use this module.
 #
 # Helper methods for defining adapters used when converting data classes to
-# Bio::Sequence class, with pseudo lazy evaluation and pseudo memoization.
+# Bio::Sequence class, with pseudo lazy evaluation and pseudo memorization.
 #
 # This module is used by using "extend", not "include".
 # 
@@ -26,7 +26,7 @@ module Bio::Sequence::Adapter
 
   private
 
-  # Defines a reader attribute method with psudo lazy evaluation/memoization.
+  # Defines a reader attribute method with psudo lazy evaluation/memorization.
   #
   # It defines a method <i>name</i> like attr_reader, but at the first time
   # when the method <i>name</i> is called, it acts as follows:

@@ -1,13 +1,27 @@
-#require 'dm-ar-finders'
-#require 'dm-core'
+  #
+  # = bio/io/biosql/sql.rb - BioSQL database classes
+  #
+  # Copyright::  Copyright (C) 2007-2009 Raoul Jean Pierre Bonnal <bonnal@ingm.it>
+  #
+  # License::    The Ruby License
+  #
+  # == Description
+  #
+  # This file contains a class which subclass ActiveRecord and define common properties
+  # for models will map to BioSQL tables. Is 
+  # and some public methods
+  #
+  # == References
+  #
+  # * BioSQL
+  #
+
 require 'erb'
 require 'composite_primary_keys'
 
 module Bio
  class SQL
     class DummyBase < ActiveRecord::Base
-      #NOTE: Using postgresql, not setting sequence name, system will discover the name by default.
-      #NOTE: this class will not establish the connection automatically
       self.abstract_class = true
       self.pluralize_table_names = false
       #prepend table name to the usual id, avoid to specify primary id for every table
@@ -27,7 +41,7 @@ module Bio
      #configurations[env].assert_valid_keys('hostname','database','adapter','username','password')
      DummyBase.configurations = configurations
     connection = DummyBase.establish_connection "#{env}"
-    #Init of basis terms and ontologies
+    #Init of basic terms and ontologies
     Ontology.first(:conditions => ["name = ?", 'Annotation Tags']) || Ontology.create({:name => 'Annotation Tags'})
     Ontology.first(:conditions => ["name = ?", 'SeqFeature Keys']) || Ontology.create({:name => 'SeqFeature Keys'})
     Ontology.first(:conditions => ["name = ?", 'SeqFeature Sources']) ||Ontology.create({:name => 'SeqFeature Sources'})

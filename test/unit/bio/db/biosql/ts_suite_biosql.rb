@@ -5,4 +5,5 @@ $:.unshift File.dirname(__FILE__)
 require 'test/unit' 
 
 # Add your testcases here
-require 'tc_biosql'
+#require 'tc_biosql'
+require 'tc_biosql_loading'
