@@ -1,0 +1,22 @@
+events: process_time
+
+fl=/media/projects/dev/bioruby/test/unit/bio/db/biosql/tc_biosql_loading.rb
+fn=Bio::TestBiosqlLoading::test_02_loading_fasta_huge-2
+34 0
+
+fl=/var/lib/gems/1.8/gems/ruby-prof-0.7.3/lib/ruby-prof/test.rb
+fn=RubyProf::Test::run_profile
+75 110000
+cfl=/media/projects/dev/bioruby/test/unit/bio/db/biosql/ruby_runtime
+cfn=Kernel::__send__
+calls=10 75
+75 0
+
+fl=/media/projects/dev/bioruby/test/unit/bio/db/biosql/ruby_runtime
+fn=Kernel::__send__
+0 0
+cfl=/media/projects/dev/bioruby/test/unit/bio/db/biosql/tc_biosql_loading.rb
+cfn=Bio::TestBiosqlLoading::test_02_loading_fasta_huge
+calls=10 75
+75 0
+

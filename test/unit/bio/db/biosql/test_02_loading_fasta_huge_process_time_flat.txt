@@ -1,0 +1,7 @@
+Thread ID: -605595428
+Total: 0.110000
+
+ %self     total     self     wait    child    calls  name
+100.00      0.11     0.11     0.00     0.00        1  RubyProf::Test#run_profile
+
+

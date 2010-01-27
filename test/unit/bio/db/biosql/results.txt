@@ -1,0 +1,8 @@
+febo@Apophis:/media/projects/dev/bioruby/test/unit/bio/db/biosql$ ruby -r rubygems -I /media/projects/dev/bioruby/lib/ tc_bio
+Loaded suite tc_biosql_loading
+Started
+..
+Finished in 20542.70679 seconds.
+
+2 tests, 401112 assertions, 0 failures, 0 errors
+

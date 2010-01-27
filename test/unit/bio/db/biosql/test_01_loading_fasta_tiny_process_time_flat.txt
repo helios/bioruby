@@ -1,0 +1,186 @@
+Thread ID: -605595428
+Total: 6.720000
+
+ %self     total     self     wait    child    calls  name
+ 11.31      0.76     0.76     0.00     0.00     3100  Time#initialize
+  3.87      0.28     0.26     0.00     0.02     1440  Mysql#query
+  3.57      1.74     0.24     0.00     1.50     8300  Array#each
+  3.57      2.49     0.24     0.00     2.25     4400  ActiveSupport::Callbacks#run_callbacks
+  3.13      0.36     0.21     0.00     0.15     9460  ActiveRecord::DynamicFinderMatch#initialize
+  2.83      0.28     0.19     0.00     0.09    66030  Hash#[]
+  2.83      6.72     0.19     0.00     6.53        1  RubyProf::Test#run_profile
+  2.38      0.94     0.16     0.00     0.78    20390  Class#new-1
+  2.23      0.31     0.15     0.00     0.16     5670  ActiveRecord::ConnectionAdapters::ConnectionHandler#retrieve_connection_pool
+  2.08      0.88     0.14     0.00     0.74     8800  ActiveSupport::Callbacks::Callback#call
+  1.93      3.39     0.13     0.00     3.26    21890  Kernel#send-1
+  1.93      0.13     0.13     0.00     0.00    34460  Kernel#class
+  1.79      0.12     0.12     0.00     0.00    28710  Regexp#===
+  1.64      0.11     0.11     0.00     0.00    23210  Module#===
+  1.49      0.23     0.10     0.00     0.13     8800  ActiveSupport::Callbacks::Callback#should_run_callback?
+  1.49      0.27     0.10     0.00     0.17     4840  ActiveRecord::AttributeMethods#read_attribute
+  1.49      0.21     0.10     0.00     0.11     7600  ActiveRecord::Base#column_for_attribute
+  1.49      0.11     0.10     0.00     0.01     6270  Proc#call
+  1.34      0.09     0.09     0.00     0.00    33890  Hash#default
+  1.19      0.84     0.08     0.00     0.76     3100  <Class::Time>#now
+  1.19      0.51     0.08     0.00     0.43     8800  ActiveSupport::Callbacks::Callback#evaluate_method
+  1.19      0.08     0.08     0.00     0.00    28520  Kernel#respond_to?
+  1.19      0.13     0.08     0.00     0.05     3520  ActiveRecord::Callbacks#notify
+  1.04      0.55     0.07     0.00     0.48     5670  <Class::ActiveRecord::Base>#retrieve_connection
+  1.04      2.17     0.07     0.00     2.10     3520  ActiveRecord::Callbacks#callback
+  1.04      0.17     0.07     0.00     0.10     3090  ActiveRecord::ConnectionAdapters::MysqlAdapter#quote
+  0.89      0.06     0.06     0.00     0.00    18700  Symbol#to_s
+  0.89      0.58     0.06     0.00     0.52     9460  <Class::ActiveRecord::DynamicFinderMatch>#match
+  0.89      0.06     0.06     0.00     0.00    14590  String#to_s
+  0.74      0.05     0.05     0.00     0.00     9690  Array#initialize
+  0.74      0.12     0.05     0.00     0.07     5670  ActiveRecord::ConnectionAdapters::ConnectionPool#connection
+  0.74      0.05     0.05     0.00     0.00    23080  Kernel#==
+  0.74      0.13     0.05     0.00     0.08      880  <Class::ActiveRecord::Base>#validate_callback_chain-1
+  0.74      1.17     0.05     0.00     1.12     4400  ActiveSupport::Callbacks::CallbackChain#run
+  0.74      0.48     0.05     0.00     0.43     5670  ActiveRecord::ConnectionAdapters::ConnectionHandler#retrieve_connection
+  0.60      0.04     0.04     0.00     0.00      550  String#gsub
+  0.60      0.65     0.04     0.00     0.61     9460  <Class::ActiveRecord::Base>#respond_to?
+  0.60      0.04     0.04     0.00     0.00     6710  Kernel#instance_variable_defined?
+  0.60      0.08     0.04     0.00     0.04      880  Hash#each
+  0.60      0.60     0.04     0.00     0.56      440  ActiveRecord::Validations#valid_without_callbacks?
+  0.60      0.23     0.04     0.00     0.19      990  ActiveRecord::Dirty#write_attribute
+  0.60      0.05     0.04     0.00     0.01     5670  ActiveRecord::ConnectionAdapters::ConnectionHandler#retrieve_connection_pool-1
+  0.45      0.03     0.03     0.00     0.00     8030  Kernel#nil?
+  0.45      0.10     0.03     0.00     0.07     3090  ActiveRecord::ConnectionAdapters::Quoting#quote
+  0.45      0.07     0.03     0.00     0.04     3520  Class#read_inheritable_attribute
+  0.45      0.03     0.03     0.00     0.00     3520  Observable#notify_observers
+  0.45      0.03     0.03     0.00     0.00      220  Bio::SQL::Bioentry(bioentry_id: integer, biodatabase_id: integer, taxon_id: integer, name: string, accession: string, identifier: string, division: string, description: text, version: integer)#after_create_or_update_associated_records_for_object_bioentry_relationships
+  0.45      0.03     0.03     0.00     0.00    10850  <Class::Object>#allocate
+  0.45      0.03     0.03     0.00     0.00     6410  Module#==
+  0.45      0.07     0.03     0.00     0.04      440  <Class::ActiveRecord::Base>#validate_on_create_callback_chain-1
+  0.45      0.58     0.03     0.00     0.55     5670  <Class::ActiveRecord::Base>#connection
+  0.45      0.03     0.03     0.00     0.00    12600  Module#name
+  0.45      0.06     0.03     0.00     0.03     5670  ActiveRecord::ConnectionAdapters::ConnectionPool#current_connection_id
+  0.45      0.03     0.03     0.00     0.00     5610  ActiveRecord::Base#new_record?
+  0.45      0.03     0.03     0.00     0.00     9030  Array#+
+  0.30      0.05     0.02     0.00     0.03      990  ActiveRecord::Dirty#field_changed?
+  0.30      0.02     0.02     0.00     0.00      220  Bio::SQL::Bioentry(bioentry_id: integer, biodatabase_id: integer, taxon_id: integer, name: string, accession: string, identifier: string, division: string, description: text, version: integer)#after_create_or_update_associated_records_for_references
+  0.30      0.58     0.02     0.00     0.56      230  <Class::ActiveRecord::Base>#find
+  0.30      0.02     0.02     0.00     0.00     3520  Class#inheritable_attributes
+  0.30      0.02     0.02     0.00     0.00     9020  Array#shift
+  0.30      0.07     0.02     0.00     0.05      440  <Class::ActiveRecord::Base>#after_save_callback_chain
+  0.30      1.01     0.02     0.00     0.99      440  ActiveRecord::Associations::AssociationProxy#method_missing
+  0.30      0.02     0.02     0.00     0.00     1870  <Class::Bio::SQL::Bioentry(bioentry_id: integer, biodatabase_id: integer, taxon_id: integer, name: string, accession: string, identifier: string, division: string, description: text, version: integer)>#primary_key
+  0.30      1.23     0.02     0.00     1.21      440  ActiveRecord::Callbacks#valid?
+  0.30      0.02     0.02     0.00     0.00     1770  Hash#keys
+  0.30      0.02     0.02     0.00     0.00     7710  <Class::ActiveRecord::Base>#columns_hash
+  0.30      0.07     0.02     0.00     0.05     2090  ActiveRecord::AttributeMethods#unserializable_attribute?
+  0.30      0.13     0.02     0.00     0.11      990  ActiveRecord::Base#connection
+  0.30      0.03     0.02     0.00     0.01      220  Hash#reject
+  0.30      0.02     0.02     0.00     0.00     2750  ActiveRecord::Dirty#changed_attributes
+  0.30      0.05     0.02     0.00     0.03      220  <Class::ActiveRecord::Base>#before_create_callback_chain
+  0.30      0.11     0.02     0.00     0.09      880  <Class::ActiveRecord::Base>#after_validation_callback_chain-1
+  0.30      0.09     0.02     0.00     0.07      880  <Class::ActiveRecord::Base>#before_save_callback_chain-1
+  0.30      0.02     0.02     0.00     0.00      230  Object#initialize
+  0.30      0.02     0.02     0.00     0.00     6360  <Class::Thread>#current
+  0.30      0.02     0.02     0.00     0.00     9710  <Class::Array>#allocate
+  0.30      0.02     0.02     0.00     0.00     5170  NilClass#nil?
+  0.30      0.02     0.02     0.00     0.00     1330  Array#join
+  0.30      0.02     0.02     0.00     0.00    30530  Class#superclass
+  0.30      0.22     0.02     0.00     0.20      230  ActiveRecord::ConnectionAdapters::MysqlAdapter#select
+  0.30      0.03     0.02     0.00     0.01      110  Bio::Sequence::Adapter::FastaFormat#primary_accession
+  0.30      0.03     0.02     0.00     0.01      440  <Class::ActiveRecord::Base>#after_validation_on_create_callback_chain-1
+  0.15      0.03     0.01     0.00     0.02      440  <Class::ActiveRecord::Base>#before_update_callback_chain-1
+  0.15      0.05     0.01     0.00     0.04      440  <Class::ActiveRecord::Base>#after_validation_on_update_callback_chain-1
+  0.15      0.01     0.01     0.00     0.00     2780  Kernel#is_a?
+  0.15      0.07     0.01     0.00     0.06      220  <Class::ActiveRecord::Base>#after_validation_on_update_callback_chain
+  0.15      0.01     0.01     0.00     0.00      330  Hash#values
+  0.15      0.47     0.01     0.00     0.46      110  CompositePrimaryKeys::ActiveRecord::Base::CompositeInstanceMethods#create_without_callbacks
+  0.15      3.18     0.01     0.00     3.17      440  ActiveRecord::Callbacks#create_or_update
+  0.15      0.02     0.01     0.00     0.01      110  ActiveRecord::Base#quoted_comma_pair_list
+  0.15      0.01     0.01     0.00     0.00      220  Bio::SQL::Bioentry(bioentry_id: integer, biodatabase_id: integer, taxon_id: integer, name: string, accession: string, identifier: string, division: string, description: text, version: integer)#before_save_associated_records_for_comments
+  0.15      0.01     0.01     0.00     0.00     3760  Kernel#respond_to_without_attributes?
+  0.15      0.01     0.01     0.00     0.00      220  String#to_sym
+  0.15      0.15     0.01     0.00     0.14      440  <Class::ActiveRecord::Base>#after_validation_callback_chain
+  0.15      0.01     0.01     0.00     0.00      110  <Class::Bio::SQL::Bioentry(bioentry_id: integer, biodatabase_id: integer, taxon_id: integer, name: string, accession: string, identifier: string, division: string, description: text, version: integer)>#sequence_name
+  0.15      0.01     0.01     0.00     0.00      880  ActiveRecord::ConnectionAdapters::MysqlAdapter#quote_string
+  0.15      0.01     0.01     0.00     0.00      120  Kernel#raise
+  0.15      0.28     0.01     0.00     0.27      230  <Class::ActiveRecord::Base>#construct_finder_sql
+  0.15      0.01     0.01     0.00     0.00      220  Bio::SQL::Bioentry(bioentry_id: integer, biodatabase_id: integer, taxon_id: integer, name: string, accession: string, identifier: string, division: string, description: text, version: integer)#validate_associated_records_for_object_bioentry_relationships
+  0.15      0.05     0.01     0.00     0.04      220  <Class::ActiveRecord::Base>#after_create_callback_chain
+  0.15      0.02     0.01     0.00     0.01      230  <Class::ActiveRecord::Base>#add_joins!
+  0.15      0.01     0.01     0.00     0.00      990  ActiveRecord::AttributeMethods::ClassMethods#match_attribute_method?
+  0.15      0.01     0.01     0.00     0.00     7160  Symbol#===
+  0.15      0.04     0.01     0.00     0.03      440  <Class::ActiveRecord::Base>#before_validation_callback_chain
+  0.15      0.03     0.01     0.00     0.02     2970  ActiveRecord::ConnectionAdapters::Column#type_cast
+  0.15      0.04     0.01     0.00     0.03      440  <Class::ActiveRecord::Base>#after_create_callback_chain-1
+  0.15      0.02     0.01     0.00     0.01      790  ActiveRecord::ConnectionAdapters::MysqlAdapter#quote_table_name
+  0.15      0.04     0.01     0.00     0.03      220  ActiveRecord::Base#attributes_from_column_definition_without_lock
+  0.15      0.01     0.01     0.00     0.00      450  <Class::ActiveRecord::Base>#sanitize_sql
+  0.15      0.01     0.01     0.00     0.00      440  ActiveRecord::Base#readonly?
+  0.15      0.02     0.01     0.00     0.01      200  ActiveSupport::Dependencies#to_constant_name
+  0.15      0.13     0.01     0.00     0.12      670  ActiveRecord::Base#quote_value
+  0.15      0.05     0.01     0.00     0.04      220  ActiveRecord::Base#remove_attributes_protected_from_mass_assignment
+  0.15      0.05     0.01     0.00     0.04     1650  ActiveRecord::AttributeMethods#respond_to?
+  0.15      0.04     0.01     0.00     0.03     2090  ActiveRecord::ConnectionAdapters::Column#text?
+  0.15      0.03     0.01     0.00     0.02      200  ActiveSupport::Dependencies#qualified_name_for
+  0.15      0.17     0.01     0.00     0.16      440  <Class::ActiveRecord::Base>#before_save_callback_chain
+  0.15      0.01     0.01     0.00     0.00      790  String#<<
+  0.15      0.01     0.01     0.00     0.00      440  ActiveRecord::ConnectionAdapters::AbstractAdapter#increment_open_transactions
+  0.15      0.01     0.01     0.00     0.00      230  ActiveRecord::Associations::AssociationProxy#conditions
+  0.15      0.01     0.01     0.00     0.00     3630  Array#==
+  0.15      0.01     0.01     0.00     0.00     6580  Hash#[]=
+  0.15      0.01     0.01     0.00     0.00      560  ActiveRecord::Reflection::AssociationReflection#primary_key_name
+  0.15      0.01     0.01     0.00     0.00     1410  String#blank?
+  0.15      6.36     0.01     0.00     6.35      110  Bio::SQL::Sequence#to_biosql
+  0.15      0.01     0.01     0.00     0.00      440  <Class::ActiveRecord::Base>#before_validation_on_update_callback_chain-1
+  0.15      1.08     0.01     0.00     1.07     1440  ActiveRecord::ConnectionAdapters::AbstractAdapter#log
+  0.15      0.01     0.01     0.00     0.00      120  Bio::FlatFile#next_entry
+  0.15      5.18     0.01     0.00     5.17      440  ActiveRecord::Transactions#save
+  0.15      0.01     0.01     0.00     0.00      520  Module#const_defined?
+  0.15      0.24     0.01     0.00     0.23     1100  Array#map
+  0.15      4.42     0.01     0.00     4.41      440  ActiveRecord::Validations#save_without_dirty
+  0.15      0.01     0.01     0.00     0.00      220  Bio::SQL::Bioentry(bioentry_id: integer, biodatabase_id: integer, taxon_id: integer, name: string, accession: string, identifier: string, division: string, description: text, version: integer)#before_save_associated_records_for_object_bioentry_relationships
+  0.15      0.01     0.01     0.00     0.00      110  ActiveRecord::ConnectionAdapters::AbstractAdapter#prefetch_primary_key?
+  0.15      0.01     0.01     0.00     0.00      220  Bio::SQL::Bioentry(bioentry_id: integer, biodatabase_id: integer, taxon_id: integer, name: string, accession: string, identifier: string, division: string, description: text, version: integer)#after_create_or_update_associated_records_for_bioentry_references
+  0.15      0.01     0.01     0.00     0.00     1350  Fixnum#to_s
+  0.15      1.38     0.01     0.00     1.37      220  ActiveRecord::Callbacks#create_without_timestamps
+  0.15      0.02     0.01     0.00     0.01      550  ActiveRecord::Base#convert_number_column_value
+  0.15      0.01     0.01     0.00     0.00     5870  Kernel#object_id
+  0.15      0.01     0.01     0.00     0.00     1970  Fixnum#==
+  0.15      0.03     0.01     0.00     0.02      990  ActiveRecord::Base#clone_attribute_value
+  0.15      0.14     0.01     0.00     0.13      220  ActiveRecord::Base#attributes=
+  0.15      0.02     0.01     0.00     0.01     2240  ActiveRecord::ConnectionAdapters::MysqlAdapter#quote_column_name
+  0.15      0.03     0.01     0.00     0.02      230  ActiveRecord::Associations::AssociationProxy#full_columns_equals
+  0.15      0.11     0.01     0.00     0.10       40  ActiveSupport::Dependencies#load_missing_constant
+  0.15      0.01     0.01     0.00     0.00      230  <Class::ActiveRecord::Base>#add_order!
+  0.15      0.01     0.01     0.00     0.00       20  Array#initialize_copy
+  0.15      0.01     0.01     0.00     0.00      550  Module#extend_object
+  0.15      0.02     0.01     0.00     0.01      230  ActiveRecord::ConnectionAdapters::MysqlAdapter#add_limit_offset!
+  0.15      0.01     0.01     0.00     0.00      220  Bio::SQL::Bioentry(bioentry_id: integer, biodatabase_id: integer, taxon_id: integer, name: string, accession: string, identifier: string, division: string, description: text, version: integer)#after_create_or_update_associated_records_for_comments
+  0.15      0.03     0.01     0.00     0.02      770  Bio::FastaFormat#identifiers
+  0.15      0.02     0.01     0.00     0.01      220  Bio::SQL::Bioentry(bioentry_id: integer, biodatabase_id: integer, taxon_id: integer, name: string, accession: string, identifier: string, division: string, description: text, version: integer)#validate_associated_records_for_cdsfeatures
+  0.15      0.04     0.01     0.00     0.03       40  ActiveSupport::Dependencies::ModuleConstMissing#const_missing-1
+  0.15      0.01     0.01     0.00     0.00      110  Bio::Sequence::Adapter::FastaFormat#definition
+  0.15      0.14     0.01     0.00     0.13      110  ActiveRecord::Reflection::AssociationReflection#build_association
+  0.15      0.01     0.01     0.00     0.00      220  Bio::SQL::Bioentry(bioentry_id: integer, biodatabase_id: integer, taxon_id: integer, name: string, accession: string, identifier: string, division: string, description: text, version: integer)#validate_associated_records_for_comments
+  0.15      0.08     0.01     0.00     0.07       60  ActiveSupport::Dependencies#load_missing_constant-1
+  0.15      0.58     0.01     0.00     0.57      220  ActiveRecord::Associations::HasOneAssociation#find_target
+  0.15      0.01     0.01     0.00     0.00      220  Bio::SQL::Bioentry(bioentry_id: integer, biodatabase_id: integer, taxon_id: integer, name: string, accession: string, identifier: string, division: string, description: text, version: integer)#after_create_or_update_associated_records_for_bioentry_qualifier_values
+  0.15      5.14     0.01     0.00     5.13      440  ActiveRecord::Transactions#with_transaction_returning_status
+  0.15      1.09     0.01     0.00     1.08     1440  ActiveRecord::ConnectionAdapters::MysqlAdapter#execute
+  0.15      0.02     0.01     0.00     0.01      110  ActiveRecord::Base#remove_readonly_attributes
+  0.15      0.04     0.01     0.00     0.03      110  Bio::Sequence::Adapter::FastaFormat#__get__entry_id
+  0.15      0.08     0.01     0.00     0.07      330  <Class::ActiveRecord::Base>#partial_updates
+  0.15      0.01     0.01     0.00     0.00       10  File#initialize
+  0.15      0.02     0.01     0.00     0.01      220  CompositePrimaryKeys::ActiveRecord::Base::CompositeInstanceMethods#ids
+  0.15      0.01     0.01     0.00     0.00     1640  Array#first
+  0.15      0.09     0.01     0.00     0.08      230  <Class::ActiveRecord::Base>#add_limit!
+  0.15      0.09     0.01     0.00     0.08      220  <Class::ActiveRecord::Base>#validate_on_create_callback_chain
+  0.15      0.03     0.01     0.00     0.02      660  <Class::ActiveRecord::Base>#partial_updates-1
+  0.15      0.01     0.01     0.00     0.00     3520  Observable#changed
+  0.15      0.55     0.01     0.00     0.54      230  <Class::ActiveRecord::Base>#find_initial
+  0.15      0.01     0.01     0.00     0.00      100  ActiveSupport::Dependencies#qualified_const_defined?
+  0.15      4.44     0.01     0.00     4.43      440  ActiveRecord::Dirty#save_without_transactions
+  0.15      1.07     0.01     0.00     1.06     1440  <Module::Benchmark>#realtime
+  0.15      0.01     0.01     0.00     0.00      990  ActiveRecord::ConnectionAdapters::Column#number?
+  0.15      0.02     0.01     0.00     0.01      220  Bio::SQL::Bioentry(bioentry_id: integer, biodatabase_id: integer, taxon_id: integer, name: string, accession: string, identifier: string, division: string, description: text, version: integer)#validate_associated_records_for_seqfeatures
+  0.15      0.01     0.01     0.00     0.00     1350  NilClass#blank?
+  0.15      0.10     0.01     0.00     0.09      990  ActiveRecord::AttributeMethods#write_attribute_without_dirty
+  0.15      0.01     0.01     0.00     0.00      220  Bio::SQL::Bioentry(bioentry_id: integer, biodatabase_id: integer, taxon_id: integer, name: string, accession: string, identifier: string, division: string, description: text, version: integer)#before_save_associated_records_for_subject_bioentry_paths
+
+
