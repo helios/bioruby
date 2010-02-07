@@ -1,0 +1,379 @@
+#require 'dm-ar-finders'
+#require 'dm-core'
+require 'composite_primary_keys'
+
+module Bio
+ class SQL
+    class DummyBase < ActiveRecord::Base
+      #NOTE: Using postgresql, not setting sequence name, system will discover the name by default.
+      #NOTE: this class will not establish the connection automatically
+      self.abstract_class = true
+      self.pluralize_table_names = false
+      #prepend table name to the usual id, avoid to specify primary id for every table
+      self.primary_key_prefix_type = :table_name_with_underscore
+      #biosql_configurations=YAML::load(ERB.new(IO.read(File.join(File.dirname(__FILE__),'../config', 'database.yml'))).result)
+      #self.configurations=biosql_configurations
+      #self.establish_connection "development"
+    end #DummyBase
+  #  #no check is made
+  def self.establish_connection(configurations, env)
+    #  #configurations is an hash similar what YAML returns.
+     # #{:database=>"biorails_development", :adapter=>"postgresql", :username=>"rails", :password=>nil}
+     #Bio::SQL.establish_connection({:database=>"bioseq", :adapter=>"mysql", :username=>nil}, "development")
+
+     configurations.assert_valid_keys('development', 'production','test')
+     configurations[env].assert_valid_keys('hostname','database','adapter','username','password')
+     DummyBase.configurations = configurations
+     DummyBase.establish_connection "#{env}"
+    #end
+  ##def self.setup(name, uri_or_options)
+#'postgres://rails@localhost/bio_test'
+    ##name_sym = name.to_sym
+#    DataMapper.logger.set_log(STDOUT, :debug)
+    ##DataMapper.setup(name_sym, uri_or_options)
+    ##repository(name_sym).adapter.resource_naming_convention = lambda do |value|
+     ## Extlib::Inflection.underscore(Extlib::Inflection.demodulize(value)).downcase
+    ##end
+    #Init of basis terms and ontologies
+    Ontology.first(:name => 'Annotation Tags') || Ontology.create({:name => 'Annotation Tags'})
+    Ontology.first(:name => 'SeqFeature Keys') || Ontology.create({:name => 'SeqFeature Keys'})
+    Ontology.first(:name => 'SeqFeature Sources') ||Ontology.create({:name => 'SeqFeature Sources'})
+    Term.first(:name => 'EMBLGenBankSwit') || Term.create({:name => 'EMBLGenBankSwit', :ontology => Ontology.first(:name => 'SeqFeature Sources')})
+  end #establish_connection
+
+
+    class Biodatabase
+      
+      property :biodatabase_id, Integer, :serial => true
+      property :name, String, :nullable=>false
+      property :authority, String
+      property :description, Text
+      has n, :bioentries, :child_key=>[:biodatabase_id]
+    end
+
+class Bioentry
+  
+  property :bioentry_id, Integer, :serial => true, :key=>true
+  belongs_to :biodatabase, :child_key=>[:biodatabase_id]
+  belongs_to :taxon, :child_key=>[:taxon_id]
+  property :name, String, :nullable=>false
+  property :accession, String, :nullable=>false
+  property :identifier, String
+  property :division, String
+  property :description, Text
+  property :version, Integer, :nullable=>false, :default=>0
+  has 1, :biosequence, :child_key=>[:bioentry_id]
+  has n, :bioentry_dbxrefs, :child_key=>[:bioentry_id]
+  has n, :bioentry_qualifier_values, :child_key=>[:bioentry_id], :order=>[:rank]
+  has n, :comments, :child_key=>[:bioentry_id], :order=>[:rank]
+  has n, :seqfeatures, :child_key=>[:bioentry_id], :order=>[:rank]
+  has n, :bioentry_references, :child_key=>[:bioentry_id]
+  has n, :terms, :through => :bioentry_qualifier_values
+  has n, :object_bioentry_paths, :child_key=>[:bioentry_id], :class_name=>'BioentryPath'
+  has n, :subject_bioentry_paths, :child_key=>[:bioentry_id], :class_name=>'BioentryPath'
+  has n, :object_bieontry_relationships, :child_key=>[:bioentry_id], :class_name=>'BioentryRelationship'
+  has n, :subject_bieontry_relationships, :child_key=>[:bioentry_id], :class_name=>'BioentryRelationship'
+end
+
+class BioentryDbxref
+  
+  belongs_to :bioentry, :child_key=>[:bioentry_id]
+  belongs_to :dbxref, :child_key=>[:dbxref_id]
+  property :rank, Integer
+end
+
+class BioentryPath
+  
+  belongs_to :object_bioentry, :child_key=>[:object_bioentry_id], :class_name=>'Bioentry', :nullable=>false
+  belongs_to :subject_beiontry, :child_key=>[:subject_bioentry_id], :class_name=>'Bioentry', :nullable=>false
+  belongs_to :term, :child_key=>[:term_id], :nullable=>false
+  property :distance, Integer
+end
+
+class BioentryQualifierValue
+  
+  belongs_to :bioentry, :nullable=>false, :child_key=>[:bioentry_id], :key=>true
+  belongs_to :term, :nullable=>false, :child_key=>[:term_id], :key=>true
+  property :value, Text
+  property :rank, Integer, :default=>0, :nullable=>false, :key=>true
+end
+
+class BioentryReference
+  
+  belongs_to :bioentry, :child_key=>[:bioentry_id], :nullable=>false, :key=>true
+  belongs_to :reference, :child_key=>[:reference_id], :nullable=>false, :key=>true
+  property :start_pos, Integer
+  property :end_pos, Integer
+  property :rank, Integer, :default=>0, :nullable=>false, :key=>true
+end
+
+class BioentryRelationship
+  
+  property :bioentry_relationship_id, Integer, :serial => true
+  belongs_to :object_bioentry, :child_key=>[:object_bioentry_id], :class_name=>'Bioentry'
+  belongs_to :subject_bioentry, :child_key=>[:subject_bioentry_id], :class_name=>'Bioentry'
+  belongs_to :term, :child_key=>[:term_id], :nullable=>false
+  property :rank, Integer
+end
+
+class Biosequence
+  
+  belongs_to :bioentry, :child_key=>[:bioentry_id], :nullable=>false, :key=>true
+  property :version, Integer, :key => true
+  property :length, Integer
+  property :alphabet, String
+  property :seq, Text
+end
+
+class Comment
+  
+  property :comment_id, Integer, :serial => true
+  belongs_to :bioentry, :child_key=>[:bioentry_id], :nullable=>false
+  property :comment_text, Text, :nullable=>false
+  property :rank, Integer, :default=>0, :nullable=>false
+end
+
+class Dbxref
+  
+  property :dbxref_id, Integer, :serial => true
+  property :dbname, String, :nullable=>false
+  property :accession, String, :nullable=>false
+  property :version, Integer, :nullable=>false
+  has n, :dbxref_qualifier_values, :child_key=>[:dbxref_id]
+  has n, :locations, :child_key=>[:dbxref_id]
+  has n, :references, :child_key=>[:dbxref_id]
+  has n, :term_dbxrefs, :child_key=>[:dbxref_id]
+  has n, :bioentry_dbxrefs, :child_key=>[:dbxref_id]
+end
+
+class DbxrefQualifierValue
+  
+  belongs_to :dbxref, :child_key=>[:dbxref_id]
+  belongs_to :term, :child_key=>[:term_id]
+  property :rank, Integer, :default=>0, :nullable=>false
+  property :value, Text
+end
+
+class Location
+  
+  property :location_id, Integer, :serial => true
+  property :start_pos, Integer
+  property :end_pos, Integer
+  property :strand, Integer, :default=>0, :nullable=>false
+  property :rank, Integer, :default=>0, :nullable=>false
+  belongs_to :seqfeature, :child_key=>[:seqfeature_id], :nullable=>false
+  belongs_to :dbxref, :child_key=>[:dbxref_id], :nullable=>false
+  belongs_to :term, :child_key=>[:term_id], :nullable=>false
+  has n, :location_qualifier_values, :child_key=>[:location_id]
+
+  def to_s
+    if strand==-1
+      str="complement("+start_pos.to_s+".."+end_pos.to_s+")"
+    else
+      str=start_pos.to_s+".."+end_pos.to_s
+    end
+  return str    
+  end
+      
+  def sequence
+    seq=""
+    unless self.seqfeature.bioentry.biosequence.seq.nil?
+      seq=Bio::Sequence::NA.new(self.seqfeature.bioentry.biosequence.seq[start_pos-1..end_pos-1])
+      seq.reverse_complement! if strand==-1
+    end
+    return seq        
+  end
+
+end
+
+class LocationQualifierValue
+  
+  property :value, String, :nullable=>false
+  property :int_value, Integer
+  belongs_to :location, :child_key=>[:location_id], :nullable=>false
+  belongs_to :term, :child_key=>[:term_id], :nullable=>false
+end
+
+class Ontology
+  
+  property :ontology_id, Integer, :serial => true
+  property :name, String, :nullable=>false
+  property :definition, Text
+  has n, :terms, :child_key=>[:ontology_id]
+  has n, :term_paths, :child_key=>[:ontology_id]
+  has n, :term_relationships, :child_key=>[:ontology_id]
+end
+
+class Reference
+  
+  property :reference_id, Integer, :serial => true
+  property :location, Text, :nullable=>false
+  property :title, Text
+  property :authors, Text
+  property :crc, String
+  belongs_to :dbxref, :child_key=>[:dbxref_id]
+  has n, :bioentry_references, :child_key=>[:reference_id]
+end
+
+class Seqfeature
+  
+  property :seqfeature_id, Integer, :serial => true
+  property :display_name, String
+  property :rank, Integer, :default=>0, :nullable=>false
+  belongs_to :bioentry, :child_key=>[:bioentry_id]
+  belongs_to :type_term, :child_key=>[:type_term_id], :class_name=>'Term'
+  belongs_to :source_term, :child_key=>[:source_term_id], :class_name=>'Term'
+  has n, :seqfeature_dbxrefs, :child_key=>[:seqfeature_id]
+  has n, :seqfeature_qualifier_values, :child_key=>[:seqfeature_id], :order=>[:rank]
+  has n, :locations, :child_key=>[:seqfeature_id], :order=>[:rank]
+  has n, :object_seqfeature_paths, :child_key=>[:object_seqfeature_id], :class_name => 'SeqfeaturePath'
+  has n, :subject_seqfeature_paths, :child_key=>[:subject_seqfeature_id], :class_name => 'SeqfeaturePath'
+  has n, :object_seqfeature_relationships, :child_key=>[:object_seqfeature_id], :class_name => 'SeqfeaturePath'
+  has n, :subject_seqfeature_relationships, :child_key=>[:subject_seqfeature_id], :class_name => 'SeqfeaturePath'
+
+  #translate the subsequences represented by the feature and its locations
+  #not considering the qualifiers 
+  #Return a Bio::Sequence::AA object
+  def translate(*args)
+    self.sequence.translate(*args)
+  end
+      #get the subsequence described by the locations objects
+  def sequence
+    self.locations.inject(Bio::Sequence::NA.new("")){|seq, location| seq << location.sequence}
+  end
+
+end
+
+class SeqfeatureDbxref
+  
+  belongs_to :seqfeature, :child_key=>[:seqfeature_id]
+  belongs_to :dbxref, :child_key=>[:dbxref_id]
+  property :rank, Integer
+end
+
+class SeqfeaturePath
+  
+  property :distance, Integer
+  belongs_to :object_seqfeature, :child_key=>[:object_seqfeature_id], :class_name => 'Seqfeature'
+  belongs_to :subject_seqfeature, :child_key=>[:subject_seqfeature_id], :class_name => 'Seqfeature'
+  belongs_to :term, :child_key=>[:term_id]
+end
+
+class SeqfeatureQualifierValue
+  
+  property :rank, Integer, :default=>0, :nullable=>false, :key=>true
+  property :value, Text, :nullable=>false
+  belongs_to :seqfeature, :child_key=>[:seqfeature_id], :key=>true
+  belongs_to :term, :child_key=>[:term_id], :key=>true
+end
+
+class SeqfeatureRelationship
+  
+  property :seqfeature_realtionship_id, Integer, :serial => true
+  property :rank, Integer
+  belongs_to :object_seqfeature, :child_key=>[:object_seqfeature_id], :class_name => 'Seqfeature'
+  belongs_to :subject_seqfeature, :child_key=>[:subject_seqfeature_id], :class_name => 'Seqfeature'
+  belongs_to :term, :child_key=>[:term_id]
+end
+
+class Term
+  
+  property :term_id, Integer, :serial => true
+  property :name, String, :nullable=>false
+  property :definition, Text
+  property :identifier, String
+  property :is_obsolete, String
+  belongs_to :ontology, :child_key=>[:ontology_id]
+  has n, :bioentries, :child_key=>[:bioentry_id]
+end
+
+class Taxon
+  
+  property :taxon_id, Integer, :serial => true
+  property :ncbi_taxon_id, Integer
+  property :parent_taxon_id, Integer #TODO: fk
+  property :node_rank, String
+  property :genetic_code, Integer
+  property :mito_genetic_code, Integer
+  property :left_value, Integer #TODO: fk
+  property :right_value, Integer #TODO: fk
+  has n, :taxon_names, :child_id=>[:taxon_id]
+  has 1, :taxon_scientific_name, :child_key=>[:taxon_id], :class_name=>'TaxonName', :name_class.eql =>'scientific name'
+  has 1, :taxon_genbank_common_name, :child_key=>[:taxon_id], :class_name=>'TaxonName', :name_class.eql =>'genbank common name'
+  has 1, :bioentry, :child_key=>[:taxon_id]
+end
+
+class TaxonName
+  
+  property :name, String, :nullable=>false
+  property :name_class, String, :nullable=>false
+  belongs_to :taxon, :child_key=>[:taxon_id]
+end
+
+class Term
+  
+  property :term_id, Integer, :serial => true
+  property :name, String
+  property :definition, Text
+  property :identifier, String
+  property :is_obsolete, String
+  belongs_to :ontology, :child_key=>[:ontology_id]
+  has n, :seqfeature_qualifier_values, :child_key=>[:term_id]
+  has n, :dbxref_qualifier_values, :child_key=>[:term_id]
+  has n, :bioentry_qualifier_values, :child_key=>[:term_id]
+  has n, :bioentries, :through =>:bioentry_qualifier_values
+  has n, :locations, :child_key=>[:term_id]
+  has n, :seqfeature_relationships, :child_key=>[:term_id]
+  has n, :term_dbxrefs, :child_key=>[:term_id]
+  has n, :term_relationship_terms, :child_key=>[:term_id]
+  has n, :term_synonyms, :child_key=>[:term_id]
+  has n, :location_qualifier_values, :child_key=>[:term_id]
+  has n, :seqfeature_types, :child_key=>[:type_term_id], :class_name=>'Seqfeature'
+  has n, :seqfeature_sources, :child_key=>[:source_term_id], :class_name=>'Seqfeature'
+  has n, :term_path_subjects, :child_key => [:subject_term_id], :class_name => 'TermPath'
+  has n, :term_path_predicates, :child_key => [:predicate_term_id], :class_name => 'TermPath'
+  has n, :term_path_objects, :child_key => [:object_term_id], :class_name => 'TermPath'
+  has n, :term_relationship_subjects, :child_key =>[:subject_term_id], :class_name => 'TermRelationship'
+  has n, :term_relationship_predicates, :child_key =>[:predicate_term_id], :class_name => 'TermRelationship'
+  has n, :term_relationship_objects, :child_key =>[:object_term_id], :class_name => 'TermRelationship'
+  has n, :seqfeature_paths, :child_key=>[:term_id]
+end
+
+class TermDbxref
+  
+  property :rank, Integer
+  belongs_to :term, :child_key=>[:term_id]
+  belongs_to :dbxref, :child_key=>[:dbxref_id]
+end
+
+class TermPath
+  
+  property :term_path_id, Integer, :serial => true
+  property :distance, Integer
+  belongs_to :ontology, :child_key=>[:ontology_id]
+  belongs_to :subject_term, :child_key=>[:subject_term_id], :class_name=>'Term'
+  belongs_to :object_term, :child_key=>[:object_term_id], :class_name=>'Term'
+  belongs_to :predicate_term, :child_key=>[:predicate_term_id], :class_name=>'Term'
+end
+
+class TermRelationship
+  
+  property :term_relationship_id, Integer, :serial => true
+  belongs_to :ontology, :child_key=>[:ontology_id]
+  belongs_to :subject_term, :child_key=>[:subject_term_id], :class_name=>'Term'
+  belongs_to :predicate_term, :child_key=>[:predicate_term_id], :class_name=>'Term'
+  belongs_to :object_term, :child_key=>[:object_term_id], :class_name=>'Term'
+  has 1, :term_relationship_term
+end
+
+class TermRelationshipTerm
+  belongs_to :term_relationship, :child_key=>[:term_relationship_id]
+  belongs_to :term, :child_key=>[:term_id]
+end
+
+class TermSynonym
+  property :synonym, String, :nullable=>false
+  belongs_to :term, :child_key=>[:term_id]
+end
+  end #SQL
+end #Bio

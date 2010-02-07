@@ -16,7 +16,7 @@ module Bio
 
 class Fasta
 
-  #autoload :Report, 'bio/appl/fasta/format10'
+  autoload :Report, 'bio/appl/fasta/format10'
   #autoload :?????,  'bio/appl/fasta/format6'
 
   # Returns a FASTA factory object (Bio::Fasta).
@@ -66,14 +66,13 @@ class Fasta
   end
   attr_reader :format
 
-  # Select parser to use ('format6' and 'format10' is acceptable for now)
+  # OBSOLETE. Does nothing and shows warning messages.
   #
-  # This method will import Bio::Fasta::Report class by requiring specified
-  # parser and will be useful when you already have fasta output files and
-  # want to use appropriate Report class for parsing.
+  # Historically, selecting parser to use ('format6' or 'format10' were
+  # expected, but only 'format10' was available as a working parser).
   #
   def self.parser(parser)
-    require "bio/appl/fasta/#{parser}"
+    warn 'Bio::Fasta.parser is obsoleted and will soon be removed.'
   end
 
   # Returns a FASTA factory object (Bio::Fasta) to run FASTA search on
@@ -102,12 +101,6 @@ class Fasta
 
 
   def parse_result(data)
-    case @format
-    when 6
-      require 'bio/appl/fasta/format6'
-    when 10
-      require 'bio/appl/fasta/format10'
-    end
     Report.new(data)
   end
 
@@ -198,10 +191,13 @@ class Fasta
         txt.sub!(/\<\/pre\>.*\z/m, '')
         txt.sub!(/.*^((T?FASTA|SSEARCH) (searches|compares))/m, '\1')
         txt.sub!(/^\<form method\=\"POST\" name\=\"clust_check\"\>.*\n/, '')
+        txt.sub!(/^\<select +name\=\"allch\".+\r?\n/i, '') # 2009.11.26
         txt.gsub!(/\<input[^\>]+value\=\"[^\"]*\"[^\>]*\>/i, '')
         txt.gsub!(/\<(a|form|select|input|option|img)\s+[^\>]+\>/i, '')
         txt.gsub!(/\<\/(a|form|select|input|option|img)\>/i, '')
-        @output = txt.gsub(/\&lt\;/, '<')
+        txt.gsub!(/\&lt\;/, '<')
+        txt.gsub!(/\&gt\;/, '>') # 2009.11.26
+        @output = txt
         report = parse_result(@output.dup)
       else
         raise 'cannot understand response'
@@ -214,22 +210,4 @@ class Fasta
 end # Fasta
 
 end # Bio
-
-
-if __FILE__ == $0
-  begin
-    require 'pp'
-    alias p pp
-  rescue
-  end
-
-# serv = Bio::Fasta.local('fasta34', 'hoge.nuc')
-# serv = Bio::Fasta.local('fasta34', 'hoge.pep')
-# serv = Bio::Fasta.local('ssearch34', 'hoge.pep')
-
-  # This may take 3 minutes or so.
-  serv = Bio::Fasta.remote('fasta', 'genes')
-  p serv.query(ARGF.read)
-end
-
 

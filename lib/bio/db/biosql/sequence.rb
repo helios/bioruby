@@ -117,53 +117,71 @@ module Bio
           #DELETE          Bioentry.transaction do
           @entry = biodatabase.bioentries.build({:name=>bs.entry_id})
 
-           self.primary_accession = bs.primary_accession
+          puts "primary" if $DEBUG
+          self.primary_accession = bs.primary_accession
 
-           self.definition = bs.definition unless bs.definition.nil?
+          puts "def" if $DEBUG
+          self.definition = bs.definition unless bs.definition.nil?
 
+          puts "seqver" if $DEBUG
           self.sequence_version = bs.sequence_version || 0
 
+          puts "divi" if $DEBUG
           self.division = bs.division unless bs.division.nil?
 
-          #self.identifier = bs.other_seqids.collect{|dblink| "#{dblink.database}:#{dblink.id}"}.join(';') unless bs.other_seqids.nil?
+          puts "identifier" if $DEBUG
+          self.identifier = bs.other_seqids.collect{|dblink| "#{dblink.database}:#{dblink.id}"}.join(';') unless bs.other_seqids.nil?
           @entry.save
+          puts "secacc" if $DEBUG
 
-#          bs.secondary_accessions.each do |sa|
- #           #write as qualifier every secondary accession into the array
-  #          self.secondary_accessions = sa
-   #       end unless bs.secondary_accessions.nil?
+          bs.secondary_accessions.each do |sa|
+            puts "#{sa}" if $DEBUG
+            #write as qualifier every secondary accession into the array
+            self.secondary_accessions = sa
+          end unless bs.secondary_accessions.nil?
 
+
+          #to create the sequence entry needs to exists
+          puts "seq" if $DEBUG
+          puts bs.seq if $DEBUG
           self.seq = bs.seq unless bs.seq.nil?
+          puts "mol" if $DEBUG
 
-    #      self.molecule_type = bs.molecule_type unless bs.molecule_type.nil?
+          self.molecule_type = bs.molecule_type unless bs.molecule_type.nil?
+          puts "dc" if $DEBUG
 
-     #     self.data_class = bs.data_class unless bs.data_class.nil?
+          self.data_class = bs.data_class unless bs.data_class.nil?
+          puts "top" if $DEBUG
+          self.topology = bs.topology unless bs.topology.nil?
+          puts "datec" if $DEBUG
+          self.date_created = bs.date_created unless bs.date_created.nil?
+          puts "datemod" if $DEBUG
+          self.date_modified = bs.date_modified unless bs.date_modified.nil?
+          puts "key" if $DEBUG
 
-      #    self.topology = bs.topology unless bs.topology.nil?
-
-       #   self.date_created = bs.date_created unless bs.date_created.nil?
-
-        #  self.date_modified = bs.date_modified unless bs.date_modified.nil?
-
-         # bs.keywords.each do |kw|
+          bs.keywords.each do |kw|
             #write as qualifier every secondary accessions into the array
-          #  self.keywords = kw
-         # end unless bs.keywords.nil?
+            self.keywords = kw
+          end unless bs.keywords.nil?
 
+          puts "spec" if $DEBUG
+          #self.species = bs.species unless bs.species.nil?
+          self.species = bs.species unless bs.species.empty?
+          puts "Debug: #{bs.species}" if $DEBUG
+          puts "Debug: feat..start" if $DEBUG
 
-          #self.species = bs.species unless bs.species.nil? || bs.species.empty?
+          bs.features.each do |feat|
+            self.feature=feat
+          end unless bs.features.nil?
 
-         # bs.features.each do |feat|
-          #  self.feature=feat
-          #end unless bs.features.nil?
+          puts "Debug: feat...end" if $DEBUG
+          bs.references.each do |reference|
+            self.reference=reference
+          end unless bs.references.nil?
 
-          #bs.references.each do |reference|
-           # self.reference=reference
-          #end unless bs.references.nil?
-
-         # bs.comments.each do |comment|
-         #   self.comment=comment
-         # end unless bs.comments.nil?
+          bs.comments.each do |comment|
+            self.comment=comment
+          end unless bs.comments.nil?
 
           #DELETE          end #transaction
           return self
@@ -275,15 +293,15 @@ module Bio
       def feature=(feat)
         #ToDo: avoid Ontology find here, probably more efficient create class variables
         #DELETE        type_term_ontology = Ontology.find_or_create({:name=>'SeqFeature Keys'})
-    #    puts "feature:type_term = #{feat.feature}" if $DEBUG
+        puts "feature:type_term = #{feat.feature}" if $DEBUG
         type_term = Term.first(:conditions=>["name = ?", feat.feature]) || Term.create({:name=>feat.feature, :ontology=>Ontology.first(:conditions=>["name = ?",'SeqFeature Keys'])})
         #DELETE        source_term_ontology = Ontology.find_or_create({:name=>'SeqFeature Sources'})
-     #   puts "feature:source_term" if $DEBUG
+        puts "feature:source_term" if $DEBUG
         source_term = Term.first(:conditions=>["name = ?",'EMBLGenBankSwit'])
-      #  puts "feature:seqfeature" if $DEBUG
+        puts "feature:seqfeature" if $DEBUG
         seqfeature = @entry.seqfeatures.build({:source_term=>source_term, :type_term=>type_term, :rank=>@entry.seqfeatures.count.succ, :display_name=>''})
         seqfeature.save
-       # puts "feature:location" if $DEBUG
+        puts "feature:location" if $DEBUG
         feat.locations.each do |loc|
           location = seqfeature.locations.build({:seqfeature=>seqfeature, :start_pos=>loc.from, :end_pos=>loc.to, :strand=>loc.strand, :rank=>seqfeature.locations.count.succ})
           location.save
@@ -291,7 +309,7 @@ module Bio
 
         #DELETE        qual_term_ontology = Ontology.find_or_create({:name=>'Annotation Tags'})
 
-        #puts "feature:qualifier" if $DEBUG
+        puts "feature:qualifier" if $DEBUG
         feat.each do |qualifier|
           #DELETE          qual_term = Term.find_or_create({:name=>qualifier.qualifier}, {:ontology=>qual_term_ontology})
           qual_term = Term.first(:conditions=>["name = ?", qualifier.qualifier]) || Term.create({:name=>qualifier.qualifier, :ontology=>Ontology.first(:conditions=>["name = ?", 'Annotation Tags'])})

@@ -41,7 +41,7 @@ module Bio
      #configurations[env].assert_valid_keys('hostname','database','adapter','username','password')
      DummyBase.configurations = configurations
     connection = DummyBase.establish_connection "#{env}"
-    #Init of basic terms and ontologies
+    #Init of basis terms and ontologies
     Ontology.first(:conditions => ["name = ?", 'Annotation Tags']) || Ontology.create({:name => 'Annotation Tags'})
     Ontology.first(:conditions => ["name = ?", 'SeqFeature Keys']) || Ontology.create({:name => 'SeqFeature Keys'})
     Ontology.first(:conditions => ["name = ?", 'SeqFeature Sources']) ||Ontology.create({:name => 'SeqFeature Sources'})
