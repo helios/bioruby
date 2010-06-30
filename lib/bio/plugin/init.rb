@@ -4,10 +4,10 @@
 
 
 #load plugin 
-Dir.glob('bio/shell/plugin/*') do |plugin|
+
+Dir.glob(File.join(File.dirname(__FILE__),'../shell/plugin/*')) do |plugin|
   if File.directory?(plugin)
     $: << File.join(plugin,'lib')
-    puts File.basename(plugin)
     require File.join(plugin,'init.rb')
   #TODO: implement also loading file.rb
   #elsif 
