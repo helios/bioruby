@@ -314,5 +314,7 @@ module Bio
     end
   end
 
+  require 'bio/plugin/init'
+
 end
 
