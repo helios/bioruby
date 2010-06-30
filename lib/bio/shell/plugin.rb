@@ -35,11 +35,11 @@
 #     HTTP for downloads.  The following bullets are true if you specify
 #     that you want to use svn.
 #
-#   * If `vendor/plugins` is under subversion control, the script will
+#   * If `shell/plugin` is under subversion control, the script will
 #     modify the svn:externals property and perform an update. You can
 #     use normal subversion commands to keep the plugins up to date.
 # 
-#   * Or, if `vendor/plugins` is not under subversion control, the
+#   * Or, if `shell/plugin` is not under subversion control, the
 #     plugin is pulled via `svn checkout` or `svn export` but looks
 #     exactly the same.
 # 
@@ -112,7 +112,7 @@ class RailsEnvironment
   end
 
   def use_externals?
-    use_svn? && File.directory?("#{root}/vendor/plugins/.svn")
+    use_svn? && File.directory?("#{root}/shell/plugin/.svn")
   end
 
   def use_checkout?
@@ -133,7 +133,7 @@ class RailsEnvironment
 
   def externals
     return [] unless use_externals?
-    ext = `svn propget svn:externals "#{root}/vendor/plugins"`
+    ext = `svn propget svn:externals "#{root}/shell/plugin"`
     lines = ext.respond_to?(:lines) ? ext.lines : ext
     lines.reject{ |line| line.strip == '' }.map do |line|
       line.strip.split(/\s+/, 2) 
@@ -147,7 +147,7 @@ class RailsEnvironment
     Tempfile.open("svn-set-prop") do |file|
       file.write(items)
       file.flush
-      system("svn propset -q svn:externals -F \"#{file.path}\" \"#{root}/vendor/plugins\"")
+      system("svn propset -q svn:externals -F \"#{file.path}\" \"#{root}/shell/plugin\"")
     end
   end
   
@@ -178,7 +178,7 @@ class Plugin
   end
   
   def installed?
-    File.directory?("#{rails_env.root}/vendor/plugins/#{name}") \
+    File.directory?("#{rails_env.root}/shell/plugin/#{name}") \
       or rails_env.externals.detect{ |name, repo| self.uri == repo }
   end
   
@@ -200,9 +200,9 @@ class Plugin
   end
 
   def uninstall
-    path = "#{rails_env.root}/vendor/plugins/#{name}"
+    path = "#{rails_env.root}/shell/plugin/#{name}"
     if File.directory?(path)
-      puts "Removing 'vendor/plugins/#{name}'" if $verbose
+      puts "Removing 'shell/plugin/#{name}'" if $verbose
       run_uninstall_hook
       rm_r path
     else
@@ -231,12 +231,12 @@ class Plugin
   private 
 
     def run_install_hook
-      install_hook_file = "#{rails_env.root}/vendor/plugins/#{name}/install.rb"
+      install_hook_file = "#{rails_env.root}/shell/plugin/#{name}/install.rb"
       load install_hook_file if File.exist? install_hook_file
     end
 
     def run_uninstall_hook
-      uninstall_hook_file = "#{rails_env.root}/vendor/plugins/#{name}/uninstall.rb"
+      uninstall_hook_file = "#{rails_env.root}/shell/plugin/#{name}/uninstall.rb"
       load uninstall_hook_file if File.exist? uninstall_hook_file
     end
 
@@ -257,8 +257,8 @@ class Plugin
 
     def install_using_http(options = {})
       root = rails_env.root
-      mkdir_p "#{root}/vendor/plugins/#{@name}"
-      Dir.chdir "#{root}/vendor/plugins/#{@name}" do
+      mkdir_p "#{root}/shell/plugin/#{@name}"
+      Dir.chdir "#{root}/shell/plugin/#{@name}" do
         puts "fetching from '#{uri}'" if $verbose
         fetcher = RecursiveHTTPFetcher.new(uri, -1)
         fetcher.quiet = true if options[:quiet]
@@ -268,7 +268,7 @@ class Plugin
     
     def install_using_git(options = {})
       root = rails_env.root
-      mkdir_p(install_path = "#{root}/vendor/plugins/#{name}")
+      mkdir_p(install_path = "#{root}/shell/plugin/#{name}")
       Dir.chdir install_path do
         init_cmd = "git init"
         init_cmd += " -q" if options[:quiet] and not $verbose
@@ -289,8 +289,8 @@ class Plugin
 
     def svn_command(cmd, options = {})
       root = rails_env.root
-      mkdir_p "#{root}/vendor/plugins"
-      base_cmd = "svn #{cmd} #{uri} \"#{root}/vendor/plugins/#{name}\""
+      mkdir_p "#{root}/shell/plugin"
+      base_cmd = "svn #{cmd} #{uri} \"#{root}/shell/plugin/#{name}\""
       base_cmd += ' -q' if options[:quiet] and not $verbose
       base_cmd += " -r #{options[:revision]}" if options[:revision]
       puts base_cmd if $verbose
@@ -489,7 +489,7 @@ module Commands
         o.separator "    #{@script_name} install http://dev.rubyonrails.com/svn/rails/plugins/continuous_builder\n"
         o.separator "  Install a plugin from a git URL:"
         o.separator "    #{@script_name} install git://github.com/SomeGuy/my_awesome_plugin.git\n"
-        o.separator "  Install a plugin and add a svn:externals entry to vendor/plugins"
+        o.separator "  Install a plugin and add a svn:externals entry to shell/plugin"
         o.separator "    #{@script_name} install -x continuous_builder\n"
         o.separator "  List all available plugins:"
         o.separator "    #{@script_name} list\n"
@@ -576,7 +576,7 @@ module Commands
           end
         end
       else
-        cd "#{@base_command.environment.root}/vendor/plugins"
+        cd "#{@base_command.environment.root}/shell/plugin"
         Dir["*"].select{|p| File.directory?(p)}.each do |name| 
           puts name
         end
@@ -793,7 +793,7 @@ module Commands
       when (best == :export and (@method != :export and @method != :http))
         msg = "Cannot install using #{@method} because this project is not under subversion."
       when (best != :externals and @method == :externals)
-        msg = "Cannot install using externals because vendor/plugins is not under subversion."
+        msg = "Cannot install using externals because shell/plugin is not under subversion."
       end
       if msg
         puts msg
@@ -837,10 +837,10 @@ module Commands
       options.parse!(args)
       root = @base_command.environment.root
       cd root
-      args = Dir["vendor/plugins/*"].map do |f|
+      args = Dir["shell/plugin/*"].map do |f|
         File.directory?("#{f}/.svn") ? File.basename(f) : nil
       end.compact if args.empty?
-      cd "vendor/plugins"
+      cd "shell/plugin"
       args.each do |name|
         if File.directory?(name)
           puts "Updating plugin: #{name}"
