@@ -15,7 +15,7 @@ module Bio::Shell
     def initialize(script)
       Bio::Shell.cache[:binding] = TOPLEVEL_BINDING
       Bio::Shell.load_session
-      eval(File.read(script), TOPLEVEL_BINDING)
+      eval(File.read(script), TOPLEVEL_BINDING,__FILE__)
       exit
     end
 
