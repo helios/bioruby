@@ -73,9 +73,9 @@ class RailsEnvironment
   end
 
   def self.find(dir=nil)
-    dir ||= pwd
+    dir ||= __FILE__
     while dir.length > 1
-      return new(File.join(dir,"bio")) if File.exist?(File.join(dir, 'bio.rb'))
+      return new(File.join(dir,"bio")) if File.exist?(File.join(dir, 'shell/plugin'))
       dir = File.dirname(dir)
     end
   end
