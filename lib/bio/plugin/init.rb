@@ -1,7 +1,7 @@
 
 #Load all the plugins located in defined directories:
 #lib/bio/shell/plugin
-require 'rubygems'
+#require 'rubygems'
 
 #load plugin: first into home directory and then into the bioruby distribution.
 
