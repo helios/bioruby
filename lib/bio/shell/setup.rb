@@ -13,9 +13,7 @@ require 'getoptlong'
 class Bio::Shell::Setup
 
   def initialize
-    #puts "Argomenti: #{ARGV.inspect}"
     check_ruby_version
-
     # command line options
     getoptlong
 
@@ -42,12 +40,20 @@ class Bio::Shell::Setup
       # setup irb server
       #Commands::Plugin.parse!(ARGV.collect{|arg| arg.sub(/^--/,"")})
       root = "--root=#{savedir}"
+
+      #puts "PlugInRoot: #{root}"
+
+      argv_for_plugin = ARGV
+
+      argv_for_plugin = argv_for_plugin.join(" ").sub(/install/, "install --force").split if @force
       #TODO: if user want to --force reinstall of a plugin there is an error because the parameter need to be --force
       #now --force is purged from --
-      @plugin=ARGV.collect{|arg| arg.sub(/^--/,"")}.insert(0,root)
+      #argv = /--plugin (.*)/.match(argv_for_plugin)
+      ##@plugin=ARGV.collect{|arg| arg.sub(/^--/,"")}.insert(0,root)
       #Bio::Shell::Script.new(__FILE__.sub(/setup/,"plugin")+" #{cmd}")
-      Bio::Shell::Plugin.new(@plugin)
-      #Commands::Plugin.parse!(cmd)
+      #puts "Pippo: #{argv[1].split.insert(0,root)}"
+      #Bio::Shell::Plugin.new(argv[1].split.insert(0,root))
+      Bio::Shell::Plugin.new(argv_for_plugin.insert(0,root))
     when :script
       # run bioruby shell script
       Bio::Shell::Script.new(@script)
@@ -69,7 +75,7 @@ class Bio::Shell::Setup
       [ '--console', '-c',  GetoptLong::NO_ARGUMENT ],
       [ '--irb',     '-i',  GetoptLong::NO_ARGUMENT ],
       [ '--plugin', '-p', GetoptLong::NO_ARGUMENT],
-      [ '--root',  '-o',  GetoptLong::REQUIRED_ARGUMENT]
+      [ '--force',  '-f',  GetoptLong::NO_ARGUMENT]
     )
     opts.each_option do |opt, arg|
       #puts "getoptlong ARGV: #{ARGV.inspect}"
@@ -83,8 +89,8 @@ class Bio::Shell::Setup
         @mode = :irb
        when /plugin/
         @mode = :plugin
-       when /--root/
-	 @working_directory = arg
+       when /force/
+	@force=true
       end
     end
   end
@@ -100,7 +106,14 @@ class Bio::Shell::Setup
     
     #
     #
-    if arg and arg[/^-/]
+    if @mode==:plugin 
+      ARGV.unshift arg
+      if File.exists?(ARGV.last)
+	arg = ARGV.pop
+      else
+	arg = nil
+      end
+   elsif arg and arg[/^-/]
       ARGV.unshift arg
       arg = nil
     end
