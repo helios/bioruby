@@ -63,6 +63,9 @@ require 'open-uri'
 require 'fileutils'
 require 'tempfile'
 
+
+
+
 include FileUtils
 
 class RailsEnvironment
@@ -106,7 +109,7 @@ class RailsEnvironment
   end
  
   def use_svn?
-    require 'active_support/core_ext/kernel'
+  #  require 'active_support/core_ext/kernel'
     silence_stderr {`svn --version` rescue nil}
     !$?.nil? && $?.success?
   end
@@ -991,3 +994,25 @@ module Bio::Shell
 
 end
 
+
+
+module Kernel
+ # For compatibility
+   def silence_stderr #:nodoc:
+     silence_stream(STDERR) { yield }
+   end
+# Silences any stream for the duration of the block.
+#
+# silence_stream(STDOUT) do
+#  puts 'This will never be seen'
+# end
+#  puts 'But this will'
+ def silence_stream(stream)
+   old_stream = stream.dup
+   stream.reopen(RUBY_PLATFORM =~ /mswin/ ? 'NUL:' : '/dev/null')
+   stream.sync = true
+   yield
+   ensure
+   stream.reopen(old_stream)
+  end
+end
