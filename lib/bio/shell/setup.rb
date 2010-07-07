@@ -108,7 +108,7 @@ class Bio::Shell::Setup
     #
     if @mode==:plugin 
       ARGV.unshift arg
-      if File.exists?(ARGV.last)
+      if !ARGV.last.nil? && File.exists?(ARGV.last)
 	arg = ARGV.pop
       else
 	arg = nil
