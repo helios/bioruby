@@ -165,7 +165,8 @@ class Plugin
   end
   
   def self.find(name)
-    name =~ /\// ? new(name) : Repositories.instance.find_plugin(name)
+    name =~ /\// ? new(name) : new("http://github.com/helios/bioruby-plugin-XXX/tarball/master".sub(/XXX/,name))
+      #remove looking in default repository use the github Repositories.instance.find_plugin(name)
   end
   
   def to_s
@@ -178,6 +179,22 @@ class Plugin
   
   def git_url?
     @uri =~ /^git:\/\// || @uri =~ /\.git$/
+  end
+
+  def zip_url?
+    @uri =~ /^https?:\/\// && @uri =~ /\.zip$/
+  end
+  def tar_url?
+    @uri =~ /^https?:\/\// && @uri =~ /\.tar\.gz$/
+  end
+
+
+  def zipball_url?
+    @uri =~ /^https?:\/\// && @uri =~ /zipball\/master$/
+  end
+
+  def tarball_url?
+    @uri =~ /^https?:\/\// && @uri =~ /tarball\/master$/
   end
   
   def installed?
@@ -260,12 +277,28 @@ class Plugin
 
     def install_using_http(options = {})
       root = rails_env.root
-      mkdir_p "#{root}/shell/plugin/#{@name}"
-      Dir.chdir "#{root}/shell/plugin/#{@name}" do
+      dir = "#{root}/shell/plugin/#{@name}"
+      if (tarball_url? || zipball_url?)
+	dir = "#{root}/shell/plugin/"
+      else
+	 mkdir_p dir
+      end
+      Dir.chdir dir do
         puts "fetching from '#{uri}'" if $verbose
         fetcher = RecursiveHTTPFetcher.new(uri, -1)
         fetcher.quiet = true if options[:quiet]
         fetcher.fetch
+      end
+      if zip_url?
+	system "unzip #{root}/shell/plugin/#{@name}/#{@name}.zip"
+      elsif tar_url?
+	system "tar xzvf #{root}/shell/plugin/#{@name}/#{@name}.tar.gz"
+      elsif tarball_url?
+	system "tar xzvf #{root}/shell/plugin/master"
+	File.delete "#{root}/shell/plugin/master" 
+       elsif zipball_url?
+	system "unzip #{root}/shell/plugin/master"
+	File.delete "#{root}/shell/plugin/master" 
       end
     end
     
@@ -306,6 +339,8 @@ class Plugin
         @name = File.basename(File.dirname(url))
       end
       @name.gsub!(/\.git$/, '') if @name =~ /\.git$/
+      @name.gsub!(/\.zip$/, '') if @name =~ /\.zip$/
+      @name.gsub!(/\.tar.gz$/, '') if @name =~ /\.tar\.gz$/
     end
     
     def rails_env
@@ -417,7 +452,6 @@ class Repository
         puts "Discovering plugins in #{@uri}" 
         puts index
       end
-
       @plugins = index.reject{ |line| line !~ /\/$/ }
       @plugins.map! { |name| Plugin.new(File.join(@uri, name), name) }
     end
@@ -952,7 +986,8 @@ class RecursiveHTTPFetcher
   
   def fetch(links = @urls_to_fetch)
     links.each do |l|
-      (l =~ /\/$/ || links == @urls_to_fetch) ? fetch_dir(l) : download(l)
+      #(l =~ /\/$/ || links == @urls_to_fetch) ? fetch_dir(l) : download(l)
+      (l =~ /\/$/ ) ? fetch_dir(l) : download(l)
     end
   end
   
